@@ -1,1 +1,2 @@
-# CSC3095-Project
+# newshound
+SEVN Stack Web Application for Networking &amp; File Exchange between Citizen Journalists
