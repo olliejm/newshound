@@ -13,5 +13,8 @@ module.exports = {
       storage: './db.sqlite',
       operatorsAliases: Op
     }
+  },
+  authentication: {
+    jwtSecret: process.env.JWT_SECRET || 'secret'
   }
 }
