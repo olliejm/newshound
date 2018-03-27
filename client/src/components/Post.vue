@@ -1,12 +1,25 @@
 <template>
-  <div>
-
-  </div>
+  <panel :title="title">
+    <p>{{body}}</p>
+    <v-btn>
+      {{user}}
+    </v-btn>
+  </panel>
 </template>
 
 <script>
+import Panel from '@/components/Panel.vue'
+
 export default {
-  name: 'post'
+  components: {
+    Panel
+  },
+  name: 'post',
+  props: [
+    'title',
+    'body',
+    'user'
+  ]
 }
 </script>
 
