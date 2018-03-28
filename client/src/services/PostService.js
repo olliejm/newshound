@@ -1,7 +1,10 @@
 import Api from '@/services/Api'
 
 export default {
-  getPosts () {
+  index () {
     return Api().get('posts')
+  },
+  create () {
+    return Api().post(`posts`)
   }
 }

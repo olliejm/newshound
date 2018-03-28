@@ -4,12 +4,13 @@
       <panel title="Posts">
         <div
           v-for="post in posts"
-          class="post"
           :key="post.id">
-          <post
-            :title="post.title"
-            :body="post.body"
-            :user="post.user"/>
+          {{post.title}} -
+          {{post.body}}
+        </div>
+        <div
+          class="error"
+          v-html="error">
         </div>
       </panel>
     </v-flex>
@@ -19,42 +20,26 @@
 <script>
 import PostService from '@/services/PostService'
 import Panel from '@/components/Panel.vue'
-import Post from '@/components/Post.vue'
 
 export default {
   components: {
-    Panel,
-    Post
+    Panel
   },
-  name: 'posts',
   data () {
     return {
-      posts: [
-        {
-          title: 'Post Title',
-          body: 'Post Body',
-          user: this.$store.state.user.email
-        }
-      ],
+      posts: [],
       error: null
     }
   },
-  mounted () {
-    this.getPosts()
-  },
-  methods: {
-    async getPosts () {
-      try {
-        const response = await PostService.getPosts()
-        this.posts = response.data
-      } catch (err) {
-        this.error = err.response.data.error
-      }
+  async mounted () {
+    try {
+      this.posts = (await PostService.index()).data
+    } catch (err) {
+      this.error = err.response.data.error
     }
   }
 }
 </script>
 
 <style scoped>
-
 </style>

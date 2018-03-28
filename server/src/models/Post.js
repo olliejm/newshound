@@ -1,12 +1,6 @@
 module.exports = (sequelize, DataTypes) => {
-  const Post = sequelize.define('Post', {
+  return sequelize.define('Post', {
     title: DataTypes.STRING,
-    body: DataTypes.STRING
+    body: DataTypes.TEXT
   })
-
-  Post.associate = function (models) {
-    Post.belongsTo(models.User)
-  }
-
-  return Post
 }
