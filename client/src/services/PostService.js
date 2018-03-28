@@ -4,7 +4,7 @@ export default {
   index () {
     return Api().get('posts')
   },
-  create () {
-    return Api().post(`posts`)
+  post (post) {
+    return Api().post(`posts`, post)
   }
 }

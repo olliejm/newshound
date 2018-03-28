@@ -7,10 +7,18 @@
     </v-toolbar-title>
     <v-toolbar-items>
       <v-btn
+        v-if="$store.state.isUserLoggedIn"
         flat
         dark
         @click="navigateTo('browse')">
         Browse
+      </v-btn>
+      <v-btn
+        v-if="$store.state.isUserLoggedIn"
+        flat
+        dark
+        @click="navigateTo('compose')">
+        Compose
       </v-btn>
     </v-toolbar-items>
     <v-spacer/>

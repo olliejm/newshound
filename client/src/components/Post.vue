@@ -14,7 +14,6 @@ export default {
   components: {
     Panel
   },
-  name: 'post',
   props: [
     'title',
     'body',

@@ -33,15 +33,15 @@ import AuthenticationService from '@/services/AuthenticationService'
 import Panel from '@/components/Panel.vue'
 
 export default {
-  components: {
-    Panel
-  },
   data () {
     return {
       email: '',
       password: '',
       error: null
     }
+  },
+  components: {
+    Panel
   },
   methods: {
     async register () {

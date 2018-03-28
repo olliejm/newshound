@@ -22,14 +22,14 @@ import PostService from '@/services/PostService'
 import Panel from '@/components/Panel.vue'
 
 export default {
-  components: {
-    Panel
-  },
   data () {
     return {
       posts: [],
       error: null
     }
+  },
+  components: {
+    Panel
   },
   async mounted () {
     try {
