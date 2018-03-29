@@ -13,7 +13,11 @@
             v-model="password"
             autocomplete="new-password"
           />
-          <div class="error" v-html="error"></div>
+          <div
+            class="alert"
+            v-if="error">
+            {{error}}
+          </div>
           <v-btn
             dark
             class="light-blue"

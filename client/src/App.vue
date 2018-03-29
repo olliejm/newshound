@@ -32,7 +32,7 @@ export default {
   margin-top: 60px;
 }
 
-.error {
+.alert {
   color: red;
 }
 </style>

@@ -10,7 +10,8 @@
         </div>
         <div
           class="error"
-          v-html="error">
+          v-if="error">
+          {{error}}
         </div>
       </panel>
     </v-flex>

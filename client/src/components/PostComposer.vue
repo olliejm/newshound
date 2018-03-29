@@ -11,16 +11,22 @@
           autocomplete="off">
           <v-text-field
             label="A summary of your request"
+            required
+            :rules="[required]"
             v-model="post.title"
           />
           <v-text-field
             label="Describe what exactly you are looking for"
+            required
             multi-line
+            :rules="[required]"
             v-model="post.body"
           />
           <div
-            class="error"
-            v-html="error"></div>
+            class="alert"
+            v-if="error">
+          {{error}}
+          </div>
           <v-btn
             dark
             class="light-blue"
@@ -28,9 +34,6 @@
             Submit
           </v-btn>
         </form>
-        <div
-          class="error"
-          v-html="error"></div>
       </panel>
     </v-flex>
   </v-layout>
@@ -47,7 +50,8 @@ export default {
         title: null,
         body: null
       },
-      error: null
+      error: null,
+      required: (value) => !!value || 'Required field.'
     }
   },
   components: {
@@ -55,8 +59,18 @@ export default {
   },
   methods: {
     async submit () {
+      this.error = null
+
+      if (!Object.keys(this.post).every(key => !!this.post[key])) {
+        this.error = 'Please fill in all required fields.'
+        return
+      }
+
       try {
         await PostService.post(this.post)
+        this.$router.push({
+          name: 'browse'
+        })
       } catch (err) {
         this.error = err.response.data.error
       }
