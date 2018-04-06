@@ -5,6 +5,18 @@
         <div
           v-for="post in posts"
           :key="post.id">
+          <v-card>
+            <v-card-title>
+              <v-avatar
+                :tile="tile"
+                :size="avatarSize"
+                class="grey lighten-4"
+              >
+                <img src="" alt="avatar">
+              </v-avatar>
+              {{post.title}}
+            </v-card-title>
+          </v-card>
           {{post.title}} -
           {{post.body}}
         </div>

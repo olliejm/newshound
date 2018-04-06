@@ -48,7 +48,8 @@ export default {
     return {
       post: {
         title: null,
-        body: null
+        body: null,
+        UserId: null
       },
       error: null,
       required: (value) => !!value || 'Required field.'
@@ -60,6 +61,7 @@ export default {
   methods: {
     async submit () {
       this.error = null
+      this.post.UserId = this.$store.state.user.id
 
       if (!Object.keys(this.post).every(key => !!this.post[key])) {
         this.error = 'Please fill in all required fields.'
