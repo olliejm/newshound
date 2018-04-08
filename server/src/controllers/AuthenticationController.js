@@ -6,7 +6,6 @@ module.exports = {
   async register (req, res) {
     try {
       req.body.avatar = req.file.filename
-
       const user = await User.create(req.body)
       const userJson = user.toJSON()
       res.send({
