@@ -27,7 +27,9 @@ module.exports = {
   },
   async index (req, res) {
     try {
-      const posts = await Post.findAll()
+      const posts = await Post.findAll({
+        limit: 15
+      })
       res.send(posts)
     } catch (err) {
       res.status(500).send({

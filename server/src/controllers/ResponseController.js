@@ -27,7 +27,9 @@ module.exports = {
   },
   async index (req, res) {
     try {
-      const response = await Response.findAll()
+      const response = await Response.findAll({
+        limit: 15
+      })
       res.send(response)
     } catch (err) {
       res.status(500).send({
