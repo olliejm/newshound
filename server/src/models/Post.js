@@ -11,6 +11,7 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false
       }
     })
+    models.Post.hasMany(models.Response)
   }
 
   return Post
