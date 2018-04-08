@@ -1,16 +1,14 @@
 const Joi = require('joi')
+const schema = {
+  email: Joi.string().email(),
+  password: Joi.string().regex(
+    new RegExp('^[a-zA-Z0-9]{8,32}$')
+  )
+}
 
 module.exports = {
   validate (req, res, next) {
-    const schema = {
-      email: Joi.string().email(),
-      password: Joi.string().regex(
-        new RegExp('^[a-zA-Z0-9]{8,32}$')
-      )
-    }
-
     const {error} = Joi.validate(req.body, schema)
-
     if (error) {
       switch (error.details[0].context.key) {
         case 'email':
