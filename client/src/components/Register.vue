@@ -81,7 +81,7 @@ export default {
         this.$store.dispatch('setUser', response.data.user)
 
         this.$router.push({
-          name: '/'
+          name: '/browse'
         })
       } catch (err) {
         this.error = err.response.data.error
