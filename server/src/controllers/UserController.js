@@ -2,10 +2,16 @@ const {User} = require('../models')
 const jwt = require('jsonwebtoken')
 const config = require('../config/config')
 
+function jwtSign (user) {
+  return jwt.sign(user, config.authentication.jwtSecret, {
+    expiresIn: 60 * 60 * 24 * 7
+  })
+}
+
 module.exports = {
   async register (req, res) {
     try {
-      req.body.avatar = req.file.filename
+      req.body.avatarUri = req.file.destination + req.file.filename
       const user = await User.create(req.body)
       const userJson = user.toJSON()
       res.send({
@@ -28,13 +34,7 @@ module.exports = {
         }
       })
 
-      if (!user) {
-        return res.status(403).send({
-          error: 'The login information was incorrect'
-        })
-      }
-
-      if (!await user.comparePassword(password)) {
+      if (!user || !await user.comparePassword(password)) {
         return res.status(403).send({
           error: 'The login information was incorrect'
         })
@@ -51,11 +51,30 @@ module.exports = {
         error: 'An error occurred during login'
       })
     }
-  }
-}
+  },
+  async remove (req, res) {
+    try {
+      const user = await User.findOne({
+        where: {
+          id: req.user.id
+        }
+      })
 
-function jwtSign (user) {
-  return jwt.sign(user, config.authentication.jwtSecret, {
-    expiresIn: 60 * 60 * 24 * 7
-  })
+      if (!user) {
+        res.status(404).send({
+          error: 'No account found with these credentials'
+        })
+      }
+
+      await user.destroy()
+      res.send({
+        success: 'Account deleted'
+      })
+    } catch (err) {
+      console.log(err)
+      res.status(500).send({
+        error: 'An error occurred deleting your account'
+      })
+    }
+  }
 }

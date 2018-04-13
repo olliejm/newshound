@@ -8,10 +8,11 @@ module.exports = (sequelize, DataTypes) => {
       unique: true
     },
     password: DataTypes.STRING,
-    avatar: DataTypes.STRING
+    avatarUri: DataTypes.STRING
   }, {
     hooks: {
-      beforeSave: hashPassword
+      beforeSave: hashPassword,
+      beforeUpdate: hashPassword
     }
   })
 

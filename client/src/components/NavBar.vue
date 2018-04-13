@@ -45,6 +45,13 @@
         Logout
       </v-btn>
     </v-toolbar-items>
+    <v-avatar
+      :tile="tile"
+      :size="27"
+      class="grey lighten-4"
+    >
+      <img src="http://localhost:8082/static/avatar/1523303974657-Image0011.jpg" alt="avatar">
+    </v-avatar>
   </v-toolbar>
 </template>
 

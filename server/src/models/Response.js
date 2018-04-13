@@ -1,7 +1,8 @@
 module.exports = (sequelize, DataTypes) => {
   const Response = sequelize.define('Response', {
     body: DataTypes.TEXT,
-    rating: DataTypes.INTEGER
+    rating: DataTypes.INTEGER,
+    audioUri: DataTypes.STRING
   })
 
   Response.associate = function (models) {

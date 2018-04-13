@@ -1,31 +1,28 @@
 <template>
   <v-layout column>
     <v-flex xs6 offset-xs3>
-      <panel title="Posts">
-        <div
-          v-for="post in posts"
-          :key="post.id">
-          <v-card>
-            <v-card-title>
-              <v-avatar
-                :tile="tile"
-                :size="avatarSize"
-                class="grey lighten-4"
-              >
-                <img src="" alt="avatar">
-              </v-avatar>
-              {{post.title}}
-            </v-card-title>
-          </v-card>
-          {{post.title}} -
+      <div
+        v-for="post in posts"
+        :key="post.id">
+        <v-card>
+          <v-card-title>
+            <v-avatar
+              :tile="tile"
+              :size="avatarSize"
+              class="grey lighten-4"
+            >
+              <img :src="post.UserId" alt="avatar">
+            </v-avatar>
+            {{post.title}}
+          </v-card-title>
           {{post.body}}
-        </div>
-        <div
-          class="error"
-          v-if="error">
-          {{error}}
-        </div>
-      </panel>
+        </v-card>
+      </div>
+      <div
+        class="error"
+        v-if="error">
+        {{error}}
+      </div>
     </v-flex>
   </v-layout>
 </template>
