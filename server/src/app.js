@@ -8,7 +8,7 @@ const app = express()
 const config = require('./config/config')
 const {sequelize} = require('./models')
 
-app.use('/static', express.static('public'))
+app.use('/public', express.static('public'))
 app.use(bodyParser.json())
 app.use(morgan('combined'))
 app.use(cors())
