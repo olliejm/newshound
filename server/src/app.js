@@ -2,7 +2,6 @@ const express = require('express')
 const bodyParser = require('body-parser')
 const cors = require('cors')
 const morgan = require('morgan')
-const passport = require('passport')
 const app = express()
 
 const config = require('./config/config')
@@ -13,7 +12,7 @@ app.use(bodyParser.json())
 app.use(morgan('combined'))
 app.use(cors())
 
-require('./auth')(passport)
+require('./auth')
 require('./routes')(app)
 
 sequelize.sync({

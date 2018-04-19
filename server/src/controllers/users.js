@@ -2,16 +2,9 @@ const {User} = require('../models')
 const jwt = require('jsonwebtoken')
 const config = require('../config/config')
 
-function jwtSign (user) {
-  return jwt.sign(user, config.authentication.jwtSecret, {
-    expiresIn: 60 * 60 * 24 * 7
-  })
-}
-
 module.exports = {
   async register (req, res) {
     try {
-      req.body.avatarUri = req.file.destination + req.file.filename
       const user = await User.create(req.body)
       const userJson = user.toJSON()
       res.send({
@@ -52,14 +45,9 @@ module.exports = {
       })
     }
   },
-  async remove (req, res) {
+  async delete (req, res) {
     try {
-      const user = await User.findOne({
-        where: {
-          id: req.user.id
-        }
-      })
-
+      const user = await User.findById(req.user.id)
       if (!user) {
         res.status(404).send({
           error: 'No account found with these credentials'
@@ -77,4 +65,10 @@ module.exports = {
       })
     }
   }
+}
+
+function jwtSign (user) {
+  return jwt.sign(user, config.authentication.jwtSecret, {
+    expiresIn: 60 * 60 * 24 * 7
+  })
 }

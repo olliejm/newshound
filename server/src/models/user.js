@@ -19,6 +19,10 @@ module.exports = (sequelize, DataTypes) => {
   User.associate = function (models) {
     models.User.hasMany(models.Post)
     models.User.hasMany(models.Response)
+    models.User.belongsToMany(models.Response, {
+      through: models.Vote,
+      as: 'Votes'
+    })
   }
 
   User.prototype.comparePassword = function (password) {

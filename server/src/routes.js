@@ -1,56 +1,63 @@
-const RegistrationPolicy = require('./policies/RegistrationPolicy')
-const AuthenticationPolicy = require('./policies/AuthenticationPolicy')
-const UploadService = require('./services/UploadService')
-const AvatarService = require('./services/AvatarService')
-const UserController = require('./controllers/UserController')
-const PostController = require('./controllers/PostController')
-const ResponseController = require('./controllers/ResponseController')
+const registration = require('./policies/registration')
+const authentication = require('./policies/authentication')
+const users = require('./controllers/users')
+const posts = require('./controllers/posts')
+const responses = require('./controllers/responses')
+const uploads = require('./controllers/uploads')
+const votes = require('./controllers/votes')
 
 module.exports = (app) => {
   app.post('/register',
-    RegistrationPolicy.validate,
-    UploadService.upload.single('avatar'),
-    UserController.register)
+    registration.validate,
+    uploads.check,
+    uploads.upload.single('avatar'),
+    uploads.rewrite,
+    users.register)
   app.post('/login',
-    UserController.login)
+    users.login)
   app.delete('/unregister',
-    AuthenticationPolicy.verify,
-    UserController.remove)
+    authentication.validate,
+    users.delete)
 
   app.post('/posts',
-    AuthenticationPolicy.verify,
-    PostController.post)
+    authentication.validate,
+    posts.create)
   app.get('/posts',
-    AuthenticationPolicy.verify,
-    PostController.index)
-  app.put('/posts/:postId',
-    AuthenticationPolicy.verify,
-    PostController.put)
+    authentication.validate,
+    posts.index)
   app.get('/posts/:postId',
-    AuthenticationPolicy.verify,
-    PostController.show)
+    authentication.validate,
+    posts.show)
+  app.put('/posts/:postId',
+    authentication.validate,
+    posts.update)
   app.delete('/posts/:postId',
-    AuthenticationPolicy.verify,
-    PostController.remove)
+    authentication.validate,
+    posts.delete)
   app.get('/users/:userId/posts',
-    AuthenticationPolicy.verify,
-    PostController.index)
+    authentication.validate,
+    posts.index)
 
-  app.post('/responses',
-    AuthenticationPolicy.verify,
-    UploadService.upload.single('response'),
-    ResponseController.post)
-  app.put('/responses/:responseId',
-    AuthenticationPolicy.verify,
-    ResponseController.put)
-  app.delete('/responses/:responseId',
-    AuthenticationPolicy.verify,
-    ResponseController.remove)
+  app.post('/posts/:postId/responses',
+    authentication.validate,
+    uploads.check,
+    uploads.upload.single('response'),
+    uploads.rewrite,
+    responses.create)
   app.get('/posts/:postId/responses',
-    AuthenticationPolicy.verify,
-    ResponseController.index)
+    authentication.validate,
+    responses.index)
+  app.put('/responses/:responseId',
+    authentication.validate,
+    responses.update)
+  app.delete('/responses/:responseId',
+    authentication.validate,
+    responses.delete)
 
-  app.get('/avatars/:userId',
-    AuthenticationPolicy.verify,
-    AvatarService.show)
+  app.get('/responses/:responseId/votes',
+    authentication.validate,
+    votes.show)
+  app.put('/responses/:responseId/votes',
+    authentication.validate,
+    votes.update)
 }

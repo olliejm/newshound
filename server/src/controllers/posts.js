@@ -1,8 +1,9 @@
 const {Post} = require('../models')
 
 module.exports = {
-  async post (req, res) {
+  async create (req, res) {
     try {
+      req.body.UserId = req.user.id
       const post = await Post.create(req.body)
       res.send(post)
     } catch (err) {
@@ -12,14 +13,53 @@ module.exports = {
       })
     }
   },
-  async put (req, res) {
+  async index (req, res) {
     try {
-      const post = await Post.findOne({
-        where: {
-          id: req.params.postId
-        }
-      })
+      const userId = req.params.userId
+      const search = req.query.search
+      let posts = null
+      if (userId) {
+        posts = await Post.findAll({
+          where: {
+            UserId: userId
+          }
+        })
+      } else if (search) {
+        posts = await Post.findAll({
+          where: {
+            $or: [
+              'title', 'body'
+            ].map(key => ({
+              [key]: {
+                $like: `%${search}%`
+              }
+            }))
+          }
+        })
+      } else posts = await Post.findAll()
 
+      res.send(posts)
+    } catch (err) {
+      console.log(err)
+      res.status(500).send({
+        error: 'An error occurred finding the posts'
+      })
+    }
+  },
+  async show (req, res) {
+    try {
+      const post = await Post.findById(req.params.postId)
+      res.send(post)
+    } catch (err) {
+      console.log(err)
+      res.status(500).send({
+        error: 'An error occurred finding the post'
+      })
+    }
+  },
+  async update (req, res) {
+    try {
+      const post = await Post.findById(req.params.postId)
       if (!post) {
         res.status(404).send({
           error: 'No matching post found'
@@ -41,63 +81,9 @@ module.exports = {
       })
     }
   },
-  async index (req, res) {
-    try {
-      const userId = req.params.userId
-      const search = req.query.search
-      let posts = null
-
-      if (userId) {
-        posts = await Post.findAll({
-          where: {
-            UserId: userId
-          }
-        })
-      } else if (search) {
-        posts = await Post.findAll({
-          where: {
-            $or: [
-              'title', 'body'
-            ].map(key => ({
-              [key]: {
-                $like: `%${search}%`
-              }
-            }))
-          }
-        })
-      } else {
-        posts = await Post.findAll({
-          limit: 15
-        })
-      }
-
-      res.send(posts)
-    } catch (err) {
-      console.log(err)
-      res.status(500).send({
-        error: 'An error occurred finding the posts'
-      })
-    }
-  },
-  async show (req, res) {
+  async delete (req, res) {
     try {
       const post = await Post.findById(req.params.postId)
-      res.send(post)
-    } catch (err) {
-      console.log(err)
-      res.status(500).send({
-        error: 'An error occurred finding the post'
-      })
-    }
-  },
-  async remove (req, res) {
-    try {
-      const post = await Post.findOne({
-        where: {
-          id: req.params.postId
-        }
-      })
-
       if (!post) {
         res.status(404).send({
           error: 'No matching post found'

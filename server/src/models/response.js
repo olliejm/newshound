@@ -1,8 +1,10 @@
 module.exports = (sequelize, DataTypes) => {
   const Response = sequelize.define('Response', {
-    body: DataTypes.TEXT,
-    rating: DataTypes.INTEGER,
-    audioUri: DataTypes.STRING
+    body: DataTypes.STRING,
+    audioUri: {
+      type: DataTypes.STRING,
+      allowNull: false
+    }
   })
 
   Response.associate = function (models) {
@@ -17,6 +19,10 @@ module.exports = (sequelize, DataTypes) => {
       foreignKey: {
         allowNull: false
       }
+    })
+    models.Response.belongsToMany(models.User, {
+      through: models.Vote,
+      as: 'Votes'
     })
   }
 

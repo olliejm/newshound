@@ -1,45 +1,23 @@
-const {Response} = require('../models')
+const {Post, Response} = require('../models')
 
 module.exports = {
-  async post (req, res) {
+  async create (req, res) {
     try {
-      req.body.audioUri = req.file.destination + req.file.filename
+      const post = await Post.findById(req.params.postId)
+      if (post.UserId === req.user.id) {
+        res.status(403).send({
+          error: 'You cannot respond to your own post'
+        })
+      }
+
+      req.body.UserId = req.user.id
+      req.body.PostId = post.id
       const response = await Response.create(req.body)
       res.send(response)
     } catch (err) {
       console.log(err)
       res.status(500).send({
         error: `An error occurred creating the response`
-      })
-    }
-  },
-  async put (req, res) {
-    try {
-      const response = await Response.findOne({
-        where: {
-          id: req.params.responseId
-        }
-      })
-
-      if (!response) {
-        res.status(404).send({
-          error: 'No matching response found'
-        })
-      }
-
-      if (response.UserId !== req.user.id) {
-        res.status(403).send({
-          error: 'You are not authorized to update this response'
-        })
-      }
-
-      req.body.responseUri = response.responseUri
-      await response.update(req.body)
-      res.send(response)
-    } catch (err) {
-      console.log(err)
-      res.status(500).send({
-        error: 'An error occurred updating the response'
       })
     }
   },
@@ -65,14 +43,34 @@ module.exports = {
       })
     }
   },
-  async remove (req, res) {
+  async update (req, res) {
     try {
-      const response = await Response.findOne({
-        where: {
-          id: req.params.responseId
-        }
-      })
+      const response = await Response.findById(req.params.responseId)
+      if (!response) {
+        res.status(404).send({
+          error: 'No matching response found'
+        })
+      }
 
+      if (response.UserId !== req.user.id) {
+        res.status(403).send({
+          error: 'You are not authorized to update this response'
+        })
+      }
+
+      req.body.responseUri = response.responseUri
+      await response.update(req.body)
+      res.send(response)
+    } catch (err) {
+      console.log(err)
+      res.status(500).send({
+        error: 'An error occurred updating the response'
+      })
+    }
+  },
+  async delete (req, res) {
+    try {
+      const response = await Response.findById(req.params.responseId)
       if (!response) {
         res.status(404).send({
           error: 'No matching response found'
