@@ -23,11 +23,14 @@
             <img :src="imgURI" alt="avatar">
           </v-avatar>
           <input @change="loadImage" type="file" name="photo" accept="image/*">
-          <div
-            class="alert"
-            v-if="error">
+          <v-alert
+            v-if="error"
+            outline
+            color="error"
+            icon="warning"
+            :value="true">
             {{error}}
-          </div>
+          </v-alert>
           <br/>
           <v-btn
             dark

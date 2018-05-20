@@ -1,35 +1,25 @@
 <template>
   <v-layout column>
     <v-flex xs6 offset-xs3>
-      <div
+      <post
         v-for="post in posts"
-        :key="post.id">
-        <v-card>
-          <v-card-title>
-            <v-avatar
-              :tile="tile"
-              :size="avatarSize"
-              class="grey lighten-4"
-            >
-              <img :src="post.UserId" alt="avatar">
-            </v-avatar>
-            {{post.title}}
-          </v-card-title>
-          {{post.body}}
-        </v-card>
-      </div>
-      <div
-        class="error"
-        v-if="error">
+        :key="post.id"
+        :post="post"/>
+      <v-alert
+        v-if="error"
+        outline
+        color="error"
+        icon="warning"
+        :value="true">
         {{error}}
-      </div>
+      </v-alert>
     </v-flex>
   </v-layout>
 </template>
 
 <script>
 import PostService from '@/services/PostService'
-import Panel from '@/components/Panel.vue'
+import Post from '@/components/Post.vue'
 
 export default {
   data () {
@@ -39,7 +29,7 @@ export default {
     }
   },
   components: {
-    Panel
+    Post
   },
   async mounted () {
     try {

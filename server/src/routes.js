@@ -5,6 +5,7 @@ const posts = require('./controllers/posts')
 const responses = require('./controllers/responses')
 const uploads = require('./controllers/uploads')
 const votes = require('./controllers/votes')
+const files = require('./controllers/files')
 
 module.exports = (app) => {
   app.post('/register',
@@ -60,4 +61,11 @@ module.exports = (app) => {
   app.put('/responses/:responseId/votes',
     authentication.validate,
     votes.update)
+
+  app.get('/users/:userId/avatar',
+    authentication.validate,
+    files.avatar)
+  app.get('/responses/:responseId/file',
+    authentication.validate,
+    files.response)
 }

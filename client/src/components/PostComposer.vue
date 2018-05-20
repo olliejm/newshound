@@ -22,11 +22,14 @@
             :rules="[required]"
             v-model="post.body"
           />
-          <div
-            class="alert"
-            v-if="error">
-          {{error}}
-          </div>
+          <v-alert
+            v-if="error"
+            outline
+            color="error"
+            icon="warning"
+            :value="true">
+            {{error}}
+          </v-alert>
           <v-btn
             dark
             class="light-blue"
