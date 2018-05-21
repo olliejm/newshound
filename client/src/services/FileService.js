@@ -5,6 +5,6 @@ export default {
     return Api().get(`users/${userId}/avatar`)
   },
   responseUri (responseId) {
-    return Api().post(`responses/${responseId}/file`)
+    return Api().get(`responses/${responseId}/file`)
   }
 }

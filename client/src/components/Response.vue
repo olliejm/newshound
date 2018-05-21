@@ -2,7 +2,7 @@
   <v-list-tile>
     <v-list-tile-content>
       {{response.body}}
-      {{file}}
+      <a :href="file">Download File</a>
     </v-list-tile-content>
     <v-list-tile-avatar>
       <img :src="avatar"/>
