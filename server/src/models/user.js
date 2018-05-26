@@ -7,8 +7,14 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       unique: true
     },
+    name: DataTypes.STRING,
     password: DataTypes.STRING,
-    avatarUri: DataTypes.STRING
+    avatarUri: DataTypes.STRING,
+    karma: {
+      type: DataTypes.INTEGER,
+      defaultValue: 0,
+      allowNull: false
+    }
   }, {
     hooks: {
       beforeSave: hashPassword,
@@ -38,7 +44,5 @@ function hashPassword (user) {
   return bcrypt
     .genSaltAsync(10)
     .then(salt => bcrypt.hashAsync(user.password, salt, null))
-    .then(hash => {
-      user.setDataValue('password', hash)
-    })
+    .then(hash => user.setDataValue('password', hash))
 }

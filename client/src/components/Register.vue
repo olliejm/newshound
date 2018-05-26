@@ -1,56 +1,62 @@
 <template>
   <v-layout column>
     <v-flex xs6 offset-xs3>
-      <panel title="Register">
-        <form
-          name="register-form"
-          autocomplete="off">
-          <v-text-field
-            label="Email Address"
-            v-model="email"
-          />
-          <v-text-field
-            label="Password"
-            type="password"
-            v-model="password"
-            autocomplete="new-password"
-          />
+      <div class="headline">
+        Register
+      </div>
+      <form
+        name="register-form"
+        autocomplete="off">
+        <v-text-field
+          v-model="name"
+          label="Full Name"/>
+        <v-text-field
+          v-model="email"
+          label="Email Address"/>
+        <v-text-field
+          v-model="password"
+          type="password"
+          label="Password"
+          autocomplete="new-password"/>
+        <v-flex>
           <v-avatar
             :tile="tile"
-            :size="56"
-            class="grey lighten-4"
-          >
-            <img :src="imgURI" alt="avatar">
+            class="grey lighten-4">
+            <img
+              :src="imgURI"
+              alt="avatar">
           </v-avatar>
-          <input @change="loadImage" type="file" name="photo" accept="image/*">
-          <v-alert
-            v-if="error"
-            outline
-            color="error"
-            icon="warning"
-            :value="true">
-            {{error}}
-          </v-alert>
-          <br/>
-          <v-btn
-            dark
-            class="light-blue"
-            @click="register">
-            Register
-          </v-btn>
-        </form>
-      </panel>
+          <input
+            @change="loadImage"
+            type="file"
+            name="photo"
+            accept="image/*">
+        </v-flex>
+        <v-alert
+          v-if="error"
+          v-html="error"
+          :value="true"
+          color="error"
+          icon="warning"/>
+        <br/>
+        <v-btn
+          @click="register"
+          class="light-blue"
+          dark>
+          Register
+        </v-btn>
+      </form>
     </v-flex>
   </v-layout>
 </template>
 
 <script>
-import AuthenticationService from '@/services/AuthenticationService'
-import Panel from '@/components/Panel.vue'
+import UserService from '@/services/UserService'
 
 export default {
   data () {
     return {
+      name: '',
       email: '',
       password: '',
       imgURI: null,
@@ -58,16 +64,13 @@ export default {
       error: null
     }
   },
-  components: {
-    Panel
-  },
   methods: {
     async register () {
       try {
         const data = {
+          name: this.name,
           email: this.email,
-          password: this.password,
-          avatar: null
+          password: this.password
         }
 
         const avatar = this.avatar
@@ -78,7 +81,8 @@ export default {
         }
 
         form.append('avatar', avatar)
-        const response = await AuthenticationService.register(form)
+
+        const response = await UserService.register(form)
 
         this.$store.dispatch('setToken', response.data.token)
         this.$store.dispatch('setUser', response.data.user)
@@ -92,9 +96,10 @@ export default {
     },
     loadImage (e) {
       if (!e.target.files[0]) return
-      this.avatar = e.target.files[0]
-      const reader = new FileReader()
 
+      this.avatar = e.target.files[0]
+
+      const reader = new FileReader()
       reader.onload = (e) => {
         this.imgURI = e.target.result
       }

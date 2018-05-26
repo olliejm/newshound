@@ -10,5 +10,8 @@ export default {
   },
   login (credentials) {
     return Api().post('login', credentials)
+  },
+  show (userId) {
+    return Api().get(`users/${userId}`)
   }
 }

@@ -22,8 +22,7 @@ module.exports = {
       res.status(415).send({
         error: 'Invalid request content type or key title'
       })
-    }
-    next()
+    } next()
   },
   rewrite (req, res, next) {
     if (req.file.fieldname === 'avatar') {
@@ -34,7 +33,7 @@ module.exports = {
       next()
     } else {
       res.status(500).send({
-        error: 'Upload re-writer was passed invalid file field name'
+        error: 'Upload re-writer was passed invalid field name'
       })
     }
   }

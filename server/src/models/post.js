@@ -4,6 +4,7 @@ module.exports = (sequelize, DataTypes) => {
     body: DataTypes.TEXT
   })
 
+  /** @namespace models.User **/
   Post.associate = function (models) {
     models.Post.belongsTo(models.User, {
       onDelete: 'CASCADE',

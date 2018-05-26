@@ -1,48 +1,32 @@
-const {Response, Vote} = require('../models')
+const {User, Response, Vote} = require('../models')
 
 module.exports = {
   async show (req, res) {
     try {
-      const response = await Response.findById(req.params.responseId)
-      if (!response) {
-        res.status(404).send({
-          error: 'Invalid response ID'
+      const vote = await Vote.findOne({
+        where: {
+          UserId: req.user.id,
+          ResponseId: req.params.responseId
+        }
+      })
+
+      if (!vote) {
+        res.send({
+          upVote: null
         })
       }
 
-      const upVotes = await Vote.count({
-        where: {
-          upVote: true,
-          ResponseId: req.params.responseId
-        }
-      })
-
-      const downVotes = await Vote.count({
-        where: {
-          upVote: false,
-          ResponseId: req.params.responseId
-        }
-      })
-
-      res.send({
-        upVotes: upVotes,
-        downVotes: downVotes
-      })
+      res.send(vote)
     } catch (err) {
       console.log(err)
       res.status(500).send({
-        error: 'An error occurred retrieving the votes'
+        error: 'An error occurred retrieving the vote information'
       })
     }
   },
   async update (req, res) {
     try {
       const response = await Response.findById(req.params.responseId)
-      if (!response) {
-        res.status(404).send({
-          error: 'Invalid response ID'
-        })
-      }
 
       if (response.UserId === req.user.id) {
         res.status(403).send({
@@ -63,8 +47,26 @@ module.exports = {
           UserId: req.user.id,
           ResponseId: req.params.responseId
         })
-      } else {
-        vote.upVote = req.body.upVote
+      } else vote.upVote = req.body.upVote
+
+      const user = await User.findById(response.UserId)
+
+      if (vote.upVote === true) {
+        await user.update({
+          karma: user.karma + 1
+        })
+
+        await response.update({
+          upVotes: response.upVotes + 1
+        })
+      } else if (vote.upVote === false) {
+        await user.update({
+          karma: user.karma - 1
+        })
+
+        await response.update({
+          downVotes: response.downVotes + 1
+        })
       }
 
       res.send(vote)

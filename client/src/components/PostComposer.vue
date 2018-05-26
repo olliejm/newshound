@@ -1,50 +1,44 @@
 <template>
-  <v-layout
-    column>
+  <v-layout column>
     <v-flex
       xs6
       offset-xs3>
-      <panel
-        title="New Post">
-        <form
-          name="compose-form"
-          autocomplete="off">
-          <v-text-field
-            label="A summary of your request"
-            required
-            :rules="[required]"
-            v-model="post.title"
-          />
-          <v-text-field
-            label="Describe what exactly you are looking for"
-            required
-            multi-line
-            :rules="[required]"
-            v-model="post.body"
-          />
-          <v-alert
-            v-if="error"
-            outline
-            color="error"
-            icon="warning"
-            :value="true">
-            {{error}}
-          </v-alert>
-          <v-btn
-            dark
-            class="light-blue"
-            @click="submit">
-            Submit
-          </v-btn>
-        </form>
-      </panel>
+      <div class="headline">
+        New Post</div>
+      <form
+        name="compose-form"
+        autocomplete="off">
+        <v-text-field
+          label="A summary of your request"
+          required
+          :rules="[required]"
+          v-model="post.title"/>
+        <v-text-field
+          label="Describe what exactly you are looking for"
+          required
+          multi-line
+          :rules="[required]"
+          v-model="post.body"/>
+        <v-alert
+          v-if="error"
+          v-html="error"
+          outline
+          color="error"
+          icon="warning"
+          :value="true"/>
+        <v-btn
+          dark
+          class="light-blue"
+          @click="submit">
+          Submit
+        </v-btn>
+      </form>
     </v-flex>
   </v-layout>
 </template>
 
 <script>
 import PostService from '@/services/PostService'
-import Panel from '@/components/Panel.vue'
 
 export default {
   data () {
@@ -57,9 +51,6 @@ export default {
       error: null,
       required: (value) => !!value || 'Required field.'
     }
-  },
-  components: {
-    Panel
   },
   methods: {
     async submit () {

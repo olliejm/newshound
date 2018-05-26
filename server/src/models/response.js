@@ -4,9 +4,12 @@ module.exports = (sequelize, DataTypes) => {
     audioUri: {
       type: DataTypes.STRING,
       allowNull: false
-    }
+    },
+    upVotes: DataTypes.INTEGER,
+    downVotes: DataTypes.INTEGER
   })
 
+  /** @namespace models.Vote **/
   Response.associate = function (models) {
     models.Response.belongsTo(models.User, {
       onDelete: 'CASCADE',

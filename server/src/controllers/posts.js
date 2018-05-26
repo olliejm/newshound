@@ -3,8 +3,12 @@ const {Post} = require('../models')
 module.exports = {
   async create (req, res) {
     try {
-      req.body.UserId = req.user.id
-      const post = await Post.create(req.body)
+      const post = await Post.create({
+        title: req.body.title,
+        body: req.body.body,
+        UserId: req.user.id
+      })
+
       res.send(post)
     } catch (err) {
       console.log(err)
@@ -15,23 +19,22 @@ module.exports = {
   },
   async index (req, res) {
     try {
-      const userId = req.params.userId
-      const search = req.query.search
       let posts = null
-      if (userId) {
+
+      if (req.params.userId) {
         posts = await Post.findAll({
           where: {
-            UserId: userId
+            UserId: req.params.userId
           }
         })
-      } else if (search) {
+      } else if (req.query.search) {
         posts = await Post.findAll({
           where: {
             $or: [
-              'title', 'body'
+              'title', 'body', 'name'
             ].map(key => ({
               [key]: {
-                $like: `%${search}%`
+                $like: `%${req.query.search}%`
               }
             }))
           }
@@ -60,11 +63,6 @@ module.exports = {
   async update (req, res) {
     try {
       const post = await Post.findById(req.params.postId)
-      if (!post) {
-        res.status(404).send({
-          error: 'No matching post found'
-        })
-      }
 
       if (post.UserId !== req.user.id) {
         res.status(403).send({
@@ -84,11 +82,6 @@ module.exports = {
   async delete (req, res) {
     try {
       const post = await Post.findById(req.params.postId)
-      if (!post) {
-        res.status(404).send({
-          error: 'No matching post found'
-        })
-      }
 
       if (post.UserId !== req.user.id) {
         res.status(403).send({
@@ -97,9 +90,7 @@ module.exports = {
       }
 
       await post.destroy()
-      res.send({
-        success: 'Post deleted'
-      })
+      res.send(post)
     } catch (err) {
       console.log(err)
       res.status(500).send({

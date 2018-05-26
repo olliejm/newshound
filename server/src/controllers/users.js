@@ -7,6 +7,8 @@ module.exports = {
     try {
       const user = await User.create(req.body)
       const userJson = user.toJSON()
+      delete userJson.password
+
       res.send({
         user: userJson,
         token: jwtSign(userJson)
@@ -34,6 +36,8 @@ module.exports = {
       }
 
       const userJson = user.toJSON()
+      delete userJson.password
+
       res.send({
         user: userJson,
         token: jwtSign(userJson)
@@ -45,18 +49,47 @@ module.exports = {
       })
     }
   },
+  async show (req, res) {
+    try {
+      const user = await User.findById(req.params.userId)
+      const userJson = user.toJSON()
+      delete userJson.password
+
+      res.send({
+        user: userJson
+      })
+    } catch (err) {
+      console.log(err)
+      res.status(500).send({
+        error: 'An error occurred finding the user'
+      })
+    }
+  },
+  async update (req, res) {
+    try {
+      const user = await User.findById(req.user.id)
+      const userJson = user.toJSON()
+      await user.update(req.body)
+      delete userJson.password
+
+      res.send({
+        user: userJson
+      })
+    } catch (err) {
+      res.status(500).send({
+        error: 'An error occurred updating your account'
+      })
+    }
+  },
   async delete (req, res) {
     try {
       const user = await User.findById(req.user.id)
-      if (!user) {
-        res.status(404).send({
-          error: 'No account found with these credentials'
-        })
-      }
-
+      const userJson = user.toJSON()
       await user.destroy()
+      delete userJson.password
+
       res.send({
-        success: 'Account deleted'
+        user: userJson
       })
     } catch (err) {
       console.log(err)
@@ -65,6 +98,7 @@ module.exports = {
       })
     }
   }
+
 }
 
 function jwtSign (user) {

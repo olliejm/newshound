@@ -4,15 +4,22 @@ module.exports = {
   async create (req, res) {
     try {
       const post = await Post.findById(req.params.postId)
+
       if (post.UserId === req.user.id) {
         res.status(403).send({
           error: 'You cannot respond to your own post'
         })
       }
 
-      req.body.UserId = req.user.id
-      req.body.PostId = post.id
-      const response = await Response.create(req.body)
+      const response = await Response.create({
+        body: req.body.body,
+        audioUri: req.body.audioUri,
+        UserId: req.user.id,
+        PostId: post.id,
+        upVotes: 0,
+        downVotes: 0
+      })
+
       res.send(response)
     } catch (err) {
       console.log(err)
@@ -29,12 +36,6 @@ module.exports = {
         }
       })
 
-      if (!responses) {
-        res.status(404).send({
-          error: 'This post has no responses yet'
-        })
-      }
-
       res.send(responses)
     } catch (err) {
       console.log(err)
@@ -46,11 +47,6 @@ module.exports = {
   async update (req, res) {
     try {
       const response = await Response.findById(req.params.responseId)
-      if (!response) {
-        res.status(404).send({
-          error: 'No matching response found'
-        })
-      }
 
       if (response.UserId !== req.user.id) {
         res.status(403).send({
@@ -58,7 +54,6 @@ module.exports = {
         })
       }
 
-      req.body.responseUri = response.responseUri
       await response.update(req.body)
       res.send(response)
     } catch (err) {
@@ -71,11 +66,6 @@ module.exports = {
   async delete (req, res) {
     try {
       const response = await Response.findById(req.params.responseId)
-      if (!response) {
-        res.status(404).send({
-          error: 'No matching response found'
-        })
-      }
 
       if (response.UserId !== req.user.id) {
         res.status(403).send({
@@ -84,9 +74,7 @@ module.exports = {
       }
 
       await response.destroy()
-      res.send({
-        success: 'Response deleted'
-      })
+      res.send(response)
     } catch (err) {
       console.log(err)
       res.status(500).send({

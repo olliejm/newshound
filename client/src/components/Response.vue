@@ -2,7 +2,10 @@
   <v-list-tile>
     <v-list-tile-content>
       {{response.body}}
-      <a :href="file">Download File</a>
+      <a
+        :href="file">
+        Download File
+      </a>
     </v-list-tile-content>
     <v-list-tile-avatar>
       <img :src="avatar"/>
@@ -11,7 +14,7 @@
 </template>
 
 <script>
-import FileService from '@/services/FileService'
+import UserService from '@/services/UserService'
 
 export default {
   props: [
@@ -19,6 +22,7 @@ export default {
   ],
   data () {
     return {
+      user: null,
       avatar: null,
       file: null,
       error: null
@@ -26,8 +30,9 @@ export default {
   },
   async mounted () {
     try {
-      this.avatar = `http://localhost:8082/${(await FileService.avatarUri(this.response.UserId)).data}`
-      this.file = `http://localhost:8082/${(await FileService.responseUri(this.response.id)).data}`
+      this.user = await UserService.show(this.response.UserId)
+      this.avatar = `http://localhost:8082/${this.user.avatarUri}`
+      this.file = `http://localhost:8082/${this.response.audioUri}`
     } catch (err) {
       this.error = err.response.data.error
     }
@@ -36,5 +41,4 @@ export default {
 </script>
 
 <style scoped>
-
 </style>

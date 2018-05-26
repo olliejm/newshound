@@ -1,46 +1,39 @@
 <template>
   <v-layout column>
     <v-flex xs6 offset-xs3>
-      <panel title="Login">
-        <form name="login-form">
-          <v-text-field
-            label="Email Address"
-            v-model="email"
-          />
-          <v-text-field
-            label="Password"
-            type="password"
-            v-model="password"
-            autocomplete="new-password"
-          />
-          <v-alert
-            v-if="error"
-            outline
-            color="error"
-            icon="warning"
-            :value="true">
-            {{error}}
-          </v-alert>
-          <v-btn
-            dark
-            class="light-blue"
-            @click="login">
-            Login
-          </v-btn>
-        </form>
-      </panel>
+      <div class="headline">
+        Login</div>
+      <form name="login-form">
+        <v-text-field
+          label="Email Address"
+          v-model="email"/>
+        <v-text-field
+          label="Password"
+          type="password"
+          v-model="password"
+          autocomplete="new-password"/>
+        <v-alert
+          v-if="error"
+          v-html="error"
+          outline
+          color="error"
+          icon="warning"
+          :value="true"/>
+        <v-btn
+          dark
+          class="light-blue"
+          @click="login">
+          Login
+        </v-btn>
+      </form>
     </v-flex>
   </v-layout>
 </template>
 
 <script>
-import AuthenticationService from '@/services/AuthenticationService'
-import Panel from '@/components/Panel.vue'
+import UserService from '@/services/UserService'
 
 export default {
-  components: {
-    Panel
-  },
   data () {
     return {
       email: '',
@@ -51,12 +44,14 @@ export default {
   methods: {
     async login () {
       try {
-        const response = await AuthenticationService.login({
+        const response = await UserService.login({
           email: this.email,
           password: this.password
         })
+
         this.$store.dispatch('setToken', response.data.token)
         this.$store.dispatch('setUser', response.data.user)
+
         this.$router.push({
           name: '/'
         })

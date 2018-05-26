@@ -4,10 +4,11 @@ module.exports = {
   validate (req, res, next) {
     const schema = {
       email: Joi.string().email(),
+      name: Joi.string(),
       password: Joi.string().regex(
         new RegExp('^[a-zA-Z0-9]{8,32}$')
       ),
-      avatar: Joi.string()
+      avatarUri: Joi.string()
     }
 
     const {error} = Joi.validate(req.body, schema)
@@ -30,8 +31,6 @@ module.exports = {
             error: 'Unknown registration validation error'
           })
       }
-    } else {
-      next()
-    }
+    } else next()
   }
 }
