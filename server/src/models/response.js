@@ -9,7 +9,6 @@ module.exports = (sequelize, DataTypes) => {
     downVotes: DataTypes.INTEGER
   })
 
-  /** @namespace models.Vote **/
   Response.associate = function (models) {
     models.Response.belongsTo(models.User, {
       onDelete: 'CASCADE',

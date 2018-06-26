@@ -3,12 +3,7 @@ const {Post} = require('../models')
 module.exports = {
   async create (req, res) {
     try {
-      const post = await Post.create({
-        title: req.body.title,
-        body: req.body.body,
-        UserId: req.user.id
-      })
-
+      const post = await Post.create(req.body)
       res.send(post)
     } catch (err) {
       console.log(err)
@@ -27,7 +22,7 @@ module.exports = {
             UserId: req.params.userId
           }
         })
-      } else if (req.query.search) {
+      /* } else if (req.query.search) {
         posts = await Post.findAll({
           where: {
             $or: [
@@ -38,7 +33,7 @@ module.exports = {
               }
             }))
           }
-        })
+        }) */
       } else posts = await Post.findAll()
 
       res.send(posts)
@@ -65,7 +60,7 @@ module.exports = {
       const post = await Post.findById(req.params.postId)
 
       if (post.UserId !== req.user.id) {
-        res.status(403).send({
+        return res.status(403).send({
           error: 'You are not authorized to update this post'
         })
       }
@@ -84,7 +79,7 @@ module.exports = {
       const post = await Post.findById(req.params.postId)
 
       if (post.UserId !== req.user.id) {
-        res.status(403).send({
+        return res.status(403).send({
           error: 'You are not authorized to remove this post'
         })
       }

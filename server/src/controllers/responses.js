@@ -6,7 +6,7 @@ module.exports = {
       const post = await Post.findById(req.params.postId)
 
       if (post.UserId === req.user.id) {
-        res.status(403).send({
+        return res.status(403).send({
           error: 'You cannot respond to your own post'
         })
       }
@@ -49,7 +49,7 @@ module.exports = {
       const response = await Response.findById(req.params.responseId)
 
       if (response.UserId !== req.user.id) {
-        res.status(403).send({
+        return res.status(403).send({
           error: 'You are not authorized to update this response'
         })
       }
@@ -68,7 +68,7 @@ module.exports = {
       const response = await Response.findById(req.params.responseId)
 
       if (response.UserId !== req.user.id) {
-        res.status(403).send({
+        return res.status(403).send({
           error: 'You are not authorized to remove this response'
         })
       }

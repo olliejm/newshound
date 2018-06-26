@@ -6,6 +6,7 @@ module.exports = {
   async register (req, res) {
     try {
       const user = await User.create(req.body)
+
       const userJson = user.toJSON()
       delete userJson.password
 
@@ -52,6 +53,7 @@ module.exports = {
   async show (req, res) {
     try {
       const user = await User.findById(req.params.userId)
+
       const userJson = user.toJSON()
       delete userJson.password
 
@@ -68,8 +70,9 @@ module.exports = {
   async update (req, res) {
     try {
       const user = await User.findById(req.user.id)
-      const userJson = user.toJSON()
       await user.update(req.body)
+
+      const userJson = user.toJSON()
       delete userJson.password
 
       res.send({
@@ -84,8 +87,9 @@ module.exports = {
   async delete (req, res) {
     try {
       const user = await User.findById(req.user.id)
-      const userJson = user.toJSON()
       await user.destroy()
+
+      const userJson = user.toJSON()
       delete userJson.password
 
       res.send({

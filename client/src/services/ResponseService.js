@@ -5,6 +5,10 @@ export default {
     return Api().get(`/posts/${postId}/responses`)
   },
   post (postId, response) {
-    return Api().post(`/posts/${postId}/responses`, response)
+    return Api().post(`/posts/${postId}/responses`, response, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    })
   }
 }

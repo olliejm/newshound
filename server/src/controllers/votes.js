@@ -11,7 +11,7 @@ module.exports = {
       })
 
       if (!vote) {
-        res.send({
+        return res.send({
           upVote: null
         })
       }
@@ -29,43 +29,34 @@ module.exports = {
       const response = await Response.findById(req.params.responseId)
 
       if (response.UserId === req.user.id) {
-        res.status(403).send({
-          error: 'You cannot vote on your own post'
+        return res.status(403).send({
+          error: 'You cannot vote on your own response'
         })
       }
 
-      let vote = await Vote.findOne({
+      const vote = await Vote.findOrCreate({
         where: {
           UserId: req.user.id,
           ResponseId: req.params.responseId
+        },
+        defaults: {
+          UserId: req.user.id,
+          ResponseId: req.params.responseId,
+          upVote: req.body.upVote
         }
       })
 
-      if (!vote) {
-        vote = await Vote.create({
-          upVote: req.body.upVote,
-          UserId: req.user.id,
-          ResponseId: req.params.responseId
-        })
-      } else vote.upVote = req.body.upVote
+      if (req.body.upVote !== vote.upVote) {
+        // TODO update or re-create votes entry
 
-      const user = await User.findById(response.UserId)
-
-      if (vote.upVote === true) {
+        const user = await User.findById(response.UserId)
         await user.update({
-          karma: user.karma + 1
+          karma: req.body.upVote ? user.karma + 1 : user.karma - 1
         })
 
         await response.update({
-          upVotes: response.upVotes + 1
-        })
-      } else if (vote.upVote === false) {
-        await user.update({
-          karma: user.karma - 1
-        })
-
-        await response.update({
-          downVotes: response.downVotes + 1
+          upVotes: req.body.upVote ? response.upVotes + 1 : response.upVotes - 1,
+          downVotes: req.body.upVote ? response.downVotes - 1 : response.downVotes + 1
         })
       }
 

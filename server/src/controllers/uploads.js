@@ -20,7 +20,7 @@ module.exports = {
   check (req, res, next) {
     if (!req.is('multipart/form-data')) {
       res.status(415).send({
-        error: 'Invalid request content type or key title'
+        error: 'Invalid request content type'
       })
     } next()
   },
